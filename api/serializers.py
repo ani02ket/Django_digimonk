@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User,BilingInfo
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -80,3 +80,9 @@ class UpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "email", "password")
+
+
+class BillingInfoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model=BilingInfo
+    fields = '__all__'

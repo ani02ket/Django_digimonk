@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
+import datetime
 
 class WeekDays(models.Model):
     day = models.CharField(_("Day"), max_length=50)
@@ -182,3 +183,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     def tokens(self):
         refresh = RefreshToken.for_user(self)
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
+
+STATE_CHOICES= (
+    ('1','delhi'),  
+    ('2','UP'),
+    ('3','GOA'),
+    ('4','MP'),
+)
+
+class BilingInfo(models.Model):
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    street_address = models.TextField(default=None,blank=True)
+    city = models.CharField(max_length=75, default=None)
+    state = models.CharField(max_length=20,choices=STATE_CHOICES,default='1') 
+    zip_code = models.CharField(max_length=75,default=None,blank=True)
+    phone_number = models.BigIntegerField(blank=True)
+    Exp_date= models.DateField(_("Exp_date"),default=timezone.now)
+    cvv=models.CharField(max_length=3,default=None)
+    cred_zipcode=models.CharField(max_length=75, default=None)
+    
+
+
+
+    

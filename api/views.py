@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import User
-from .serializers import UserRegisterSerializer,GenerateOTPSerializer, VerifyAccountSerializer
+from .serializers import UserRegisterSerializer,GenerateOTPSerializer, VerifyAccountSerializer,BillingInfoSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -76,3 +76,17 @@ class VerifyOTP(APIView):
                 })
         except Exception as e:
             print(e)
+            
+            
+class Billing(APIView):
+    def post(self,request):
+        serializer = BillingInfoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            'status':200,
+            'message':"Successful"
+            
+        })
+        
+
