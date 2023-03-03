@@ -7,6 +7,6 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User,UserAdmin)
 
 class BillingAdmin(admin.ModelAdmin):
-    list_display= ('user','card_number','card_zipcode','Exp_date','cvv')
+    list_display= ('user','first_name','last_name','address','city','state_id','zip_code')
      
 admin.site.register(BilingInfo,BillingAdmin)

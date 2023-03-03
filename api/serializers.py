@@ -66,4 +66,4 @@ class UpdateSerializer(serializers.ModelSerializer):
 class BillingInfoSerializer(serializers.ModelSerializer):
   class Meta:
     model=BilingInfo
-    fields = ("user",)
+    fields = ("user","first_name","last_name","address","city","state_id","zip_code")

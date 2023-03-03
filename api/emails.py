@@ -6,7 +6,7 @@ from django.conf import settings
 def send_otp_via_email(email):
     subject='Your account verification email'
     otp=random.randint(1000,9999)
-    message=f'Your otp is {otp}'
+    message=f'Your otp is {otp} and link :https://docs.djangoproject.com/en/4.1/topics/db/examples/one_to_one/'
     email_from=settings.EMAIL_HOST_USER
     send_mail(subject,message,email_from,[email])
     user_obj=User.objects.get(email=email)

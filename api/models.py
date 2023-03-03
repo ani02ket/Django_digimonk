@@ -189,10 +189,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class BilingInfo(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    card_number=models.BigIntegerField(null=True, blank=True)
-    Exp_date= models.DateField(_("Exp_date"),default=timezone.now)
-    cvv=models.CharField(max_length=3,null=True,default=None)
-    card_zipcode=models.CharField(max_length=75, null=True, default=None)
+    first_name = models.CharField(_('first name'), max_length=150, blank=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    address = models.TextField(null=True, blank=True)
+    city = models.CharField(max_length=75, default=None, null=True, blank=True)
+    state_id = models.ForeignKey(
+        States,
+        verbose_name=_("User State"),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    zip_code = models.CharField(max_length=75, default=None, null=True, blank=True)
+    
+    
     
     
 
