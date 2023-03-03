@@ -90,6 +90,8 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, user_type, **extra_fields)
 
 
+
+    
 class User(AbstractBaseUser, PermissionsMixin):
 
     """
@@ -183,25 +185,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     def tokens(self):
         refresh = RefreshToken.for_user(self)
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
-
-STATE_CHOICES= (
-    ('1','delhi'),  
-    ('2','UP'),
-    ('3','GOA'),
-    ('4','MP'),
-)
+    
 
 class BilingInfo(models.Model):
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    street_address = models.TextField(default=None,blank=True)
-    city = models.CharField(max_length=75, default=None)
-    state = models.CharField(max_length=20,choices=STATE_CHOICES,default='1') 
-    zip_code = models.CharField(max_length=75,default=None,blank=True)
-    phone_number = models.BigIntegerField(blank=True)
+    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    card_number=models.BigIntegerField(null=True, blank=True)
     Exp_date= models.DateField(_("Exp_date"),default=timezone.now)
-    cvv=models.CharField(max_length=3,default=None)
-    cred_zipcode=models.CharField(max_length=75, default=None)
+    cvv=models.CharField(max_length=3,null=True,default=None)
+    card_zipcode=models.CharField(max_length=75, null=True, default=None)
+    
     
 
 

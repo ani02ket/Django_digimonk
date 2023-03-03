@@ -1,29 +1,14 @@
-from typing import Dict
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from django.utils.translation import gettext as _
-from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User,BilingInfo
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(min_length=8, required=True)
-  #  password = serializers.CharField(min_length=6)
 
     class Meta:
         model = User
-        fields =('email','otp')
-
-    # def validate_username(self, value):
-    #     if(len(value) > 10):
-    #         raise serializers.ValidationError(_("username should be less than 10 Characters"))
-
-
-    #     if(User.objects.filter(username__iexact=value).first()):
-    #         raise serializers.ValidationError(_("Username already exists."))
-
-    #     return value
+        fields =('email',)
 
     def validate_email(self, value):
 
@@ -32,11 +17,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         return value
 
-    # def create(self, validated_data:dict):   
-    #     user = User.objects.create_user(email=validated_data['email'])
-    #     # user.set_password(validated_data['password'])
-    #     user.save()
-    #     return user
     
 class GenerateOTPSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(min_length=8, required=True)
@@ -45,6 +25,7 @@ class GenerateOTPSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields =('email','otp')
+        
     
 class VerifyAccountSerializer(serializers.Serializer):
     email=serializers.EmailField(min_length=8,required=True)
@@ -85,4 +66,4 @@ class UpdateSerializer(serializers.ModelSerializer):
 class BillingInfoSerializer(serializers.ModelSerializer):
   class Meta:
     model=BilingInfo
-    fields = '__all__'
+    fields = ("user",)

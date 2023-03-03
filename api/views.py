@@ -3,39 +3,24 @@ from .models import User
 from .serializers import UserRegisterSerializer,GenerateOTPSerializer, VerifyAccountSerializer,BillingInfoSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
 from .emails import *
-# Create your views here.
+
 
 class RegistrationView(APIView):
-    #permission_classes = [AllowAny]
 
     def post(self,request):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({
-            'status':200,
-            'message':f"Successfully registered"
-            
-        })
+        return Response(status=status.HTTP_201_CREATED)
 
 class GenerateOTP(APIView):
     def post(self,request):
         serializer = GenerateOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
         otp= send_otp_via_email(serializer.data['email'])
-        print(otp)
-        
-        return Response({
-                        'status':400,
-                        'message':f"Generated opt is {otp}"
-                    })
+        return Response(status=status.HTTP_201_CREATED)
 
 class VerifyOTP(APIView):
     def post(self,request):
@@ -46,34 +31,21 @@ class VerifyOTP(APIView):
                 email=serializer.data['email']
                 otp=serializer.data['otp']
                 
-                user=User.objects.filter(email=email)
-                # print(user[0])
-                
+                user=User.objects.filter(email=email)                
                 if not user.exists():
                     otp= send_otp_via_email(serializer.data['email'])
                     print(otp)
-                    return Response({
-                        'status':400,
-                        'message':'something went wronng',
-                        'data':'Invalid email'
-                    })
+                    return Response(status=status.HTTP_404_NOT_FOUND)
                     
                 if user[0].otp!=otp:
                     return Response({
-                        'status':400,
-                        'message':'something went wronng',
-                        'data':'Wrong otp'
+                        'message':'Invalid OTP'
                     })
                 
-                # user[0].is_verified=True
                 user[0].save()
                 
                 
-                return Response({
-                    'status':200,
-                    'message':'Account is verified',
-                    'data': {}
-                })
+                return Response({'message':'Account is verified'})
         except Exception as e:
             print(e)
             
@@ -83,10 +55,6 @@ class Billing(APIView):
         serializer = BillingInfoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({
-            'status':200,
-            'message':"Successful"
-            
-        })
+        return Response(status=status.HTTP_201_CREATED)
         
 
