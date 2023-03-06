@@ -8,7 +8,6 @@ urlpatterns = [
     path("otp/",GenerateOTP.as_view()),
     path("billing/",Billing.as_view()),
     path("UserLogin/",UserLogin.as_view()),
-    # path("VerifyToken/<token>", VerifyToken.as_view()),
     path("VerifyToken/<token>",VerifyToken)
 
 ]

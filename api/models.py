@@ -89,7 +89,13 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, user_type, **extra_fields)
 
+class EventInterest(models.Model):
+    
+    event_category = models.CharField(max_length=50)
+    status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return str(self.event_category)
 
     
 class User(AbstractBaseUser, PermissionsMixin):
@@ -152,10 +158,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     available_from = models.TimeField(null=True, blank=True)
     available_to = models.TimeField(null=True, blank=True)
     off_weekdays = models.ManyToManyField(WeekDays)
+    event= models.ManyToManyField(EventInterest)
     profile_image = models.ImageField(
         upload_to="Avatar", default=None, null=True, blank=True
     )
-
+    
     objects = UserManager()
     USERNAME_FIELD = 'email'
 
@@ -204,7 +211,7 @@ class BilingInfo(models.Model):
     )
     zip_code = models.CharField(max_length=75, default=None, null=True, blank=True)
     
-    
+
     
     
 

@@ -15,10 +15,10 @@ def send_otp_via_email(email):
     user_obj.save()
     return user_obj.otp
 
-def send_email_token(email):
+def send_email_token(email,token):
     try:
         subject='Your account need to be verified'
-        email_token=str(uuid.uuid4())
+        email_token=token
         message=f'Click here on the link to verify http://127.0.0.1:8000/VerifyToken/{email_token} '
         email_from=settings.EMAIL_HOST_USER
         send_mail(subject,message,email_from,[email])

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .emails import *
 import uuid
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegistrationView(APIView):
@@ -64,14 +65,20 @@ class UserLogin(APIView):
     def post(self,request): 
         email = self.request.data.get("email")
         password = self.request.data.get("password")
+        user=User.objects.get(email=email)
+        refresh = RefreshToken.for_user(user)
         if email and password:
             serializer = UserLoginSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            return Response({"message":f" Generated token: {str(uuid.uuid4())}"})
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                })
+            
         else:
             serializer = UserLoginSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            email_token=send_email_token(serializer.data['email'])
+            email_token=send_email_token(serializer.data['email'],str(refresh.access_token))
             return Response({"message":f" please check mail to login  "})
 
 def VerifyToken(request,token):

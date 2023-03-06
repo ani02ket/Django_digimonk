@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import User,BilingInfo
 
 class UserAdmin(admin.ModelAdmin):
-    list_display= ('email','password','otp','email_token','is_verified')
+    list_display= ('email','password','otp','email_token')
       
 admin.site.register(User,UserAdmin)
 
