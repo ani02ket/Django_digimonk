@@ -67,3 +67,11 @@ class BillingInfoSerializer(serializers.ModelSerializer):
   class Meta:
     model=BilingInfo
     fields = ("user","first_name","last_name","address","city","state_id","zip_code")
+    
+    
+class GeneratelinkSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(min_length=8, required=True)
+
+    class Meta:
+        model = User
+        fields =('email',)

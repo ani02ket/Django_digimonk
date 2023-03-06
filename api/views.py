@@ -1,6 +1,7 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from .models import User
-from .serializers import UserRegisterSerializer,GenerateOTPSerializer, VerifyAccountSerializer,BillingInfoSerializer
+from .serializers import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -57,4 +58,22 @@ class Billing(APIView):
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
         
+
+class GenerateLoginToken(APIView):
+    def post(self,request):
+        serializer = GeneratelinkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email_token=send_email_token(serializer.data['email'])
+        return Response({"message":f"Token is generated"})
+
+
+def VerifyToken(request,token):
+    try:
+            obj=User.objects.get(email_token=token)
+            obj.is_verified=True
+            obj.save()
+            return HttpResponse('Your account is verified')  
+    except Exception as e:
+            print("inavalid token")
+            return HttpResponse('Invalid token')
 

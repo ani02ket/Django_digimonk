@@ -116,6 +116,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True,  blank=True)
     otp=models.CharField(max_length=20,null=True,blank=True)
+    email_token=models.CharField(max_length=200)
+    is_verified=models.BooleanField(default=False)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
