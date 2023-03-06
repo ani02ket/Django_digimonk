@@ -41,7 +41,8 @@ class VerifyAccountSerializer(serializers.Serializer):
            
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
-    password=serializers.CharField(min_length=6)
+    password = serializers.CharField(required=False)
+
 
     class Meta:
         model = User
@@ -68,10 +69,3 @@ class BillingInfoSerializer(serializers.ModelSerializer):
     model=BilingInfo
     fields = ("user","first_name","last_name","address","city","state_id","zip_code")
     
-    
-class GeneratelinkSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(min_length=8, required=True)
-
-    class Meta:
-        model = User
-        fields =('email',)

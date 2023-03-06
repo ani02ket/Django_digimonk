@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .emails import *
+import uuid
 
 
 class RegistrationView(APIView):
@@ -59,21 +60,24 @@ class Billing(APIView):
         return Response(status=status.HTTP_201_CREATED)
         
 
-class GenerateLoginToken(APIView):
-    def post(self,request):
-        serializer = GeneratelinkSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        email_token=send_email_token(serializer.data['email'])
-        return Response({"message":f"Token is generated"})
-
+class UserLogin(APIView):
+    def post(self,request): 
+        email = self.request.data.get("email")
+        password = self.request.data.get("password")
+        if email and password:
+            serializer = UserLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            return Response({"message":f" Generated token: {str(uuid.uuid4())}"})
+        else:
+            serializer = UserLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email_token=send_email_token(serializer.data['email'])
+            return Response({"message":f" please check mail to login  "})
 
 def VerifyToken(request,token):
     try:
-            obj=User.objects.get(email_token=token)
-            obj.is_verified=True
-            obj.save()
-            return HttpResponse('Your account is verified')  
+        obj=User.objects.get(email_token=token)
+        return HttpResponse('Your account is verified you are logged in')  
     except Exception as e:
-            print("inavalid token")
-            return HttpResponse('Invalid token')
+        return HttpResponse('Invalid token')
 
