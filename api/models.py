@@ -10,6 +10,9 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 import datetime
+import pytz
+
+TIMEZONES=tuple(zip(pytz.all_timezones,pytz.all_timezones))
 
 class WeekDays(models.Model):
     day = models.CharField(_("Day"), max_length=50)
@@ -92,7 +95,7 @@ class UserManager(BaseUserManager):
 class EventInterest(models.Model):
     
     event_category = models.CharField(max_length=50)
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.event_category)
@@ -143,6 +146,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     "UserType", verbose_name=_("User Type"), on_delete=models.CASCADE
     #   )
     phone_number = models.BigIntegerField(True, null=True, blank=True)
+    timezone=models.CharField(max_length=32,choices=TIMEZONES,default='UTC')
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=75, default=None, null=True, blank=True)
     state_id = models.ForeignKey(

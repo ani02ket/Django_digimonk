@@ -5,10 +5,16 @@ from .serializers import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework import viewsets
 from .emails import *
-import uuid
 from rest_framework_simplejwt.tokens import RefreshToken
 
+# class EventView(viewsets.ModelViewSet):
+#     serializer=EventSerialier
+#     def get_queryset(self):
+#         event=EventInterest.objects.all()
+#         return event
+  
 
 class RegistrationView(APIView):
 
