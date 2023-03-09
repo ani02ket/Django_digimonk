@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.utils.translation import gettext as _
-from .models import User,BilingInfo,EventInterest
+from .models import *
 
 
 
@@ -85,7 +85,11 @@ class UpdateSerializer(serializers.ModelSerializer):
 
 
 class BillingInfoSerializer(serializers.ModelSerializer):
-  class Meta:
-    model=BilingInfo
-    fields = ("user","first_name","last_name","address","city","state_id","zip_code")
+    class Meta:
+        model=BilingInfo
+        fields = ("user","first_name","last_name","address","city","state_id","zip_code")
     
+class EventDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model:EventDetails
+        field ="__all__"

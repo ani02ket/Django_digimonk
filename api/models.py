@@ -112,7 +112,27 @@ class EventInterest(models.Model):
     # def __str__(self) -> str:
     #     return self.language
 
+
+class ScheduledEvent(models.Model):
+    sid=models.AutoField(primary_key=True)
+    event_start=models.DateTimeField(_('event_start'), default=timezone.now)
+    event_end= models.DateTimeField(_('event_end'), default=timezone.now)
     
+    def __str__(self):
+        return str(self.event_start)
+
+class OpenSchedule(models.Model):
+    timezone=models.CharField(max_length=32,choices=TIMEZONES,default='UTC')
+    
+    def __str__(self):
+        return str(self.timezone)
+    
+class CombinedSchedule(ScheduledEvent,OpenSchedule):
+        
+    def __str__(self):
+        return str(self.timezone)
+    
+  
 class User(AbstractBaseUser, PermissionsMixin):
 
     """
@@ -159,6 +179,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     #   )
     phone_number = models.BigIntegerField(True, null=True, blank=True)
     timezone=models.CharField(max_length=32,choices=TIMEZONES,default='UTC')
+    
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=75, default=None, null=True, blank=True)
     state_id = models.ForeignKey(
@@ -168,9 +189,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         blank=True,
     )
+   
+    
     zip_code = models.CharField(max_length=75, default=None, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
-    # time_zone =
     available_from = models.TimeField(null=True, blank=True)
     available_to = models.TimeField(null=True, blank=True)
     off_weekdays = models.ManyToManyField(WeekDays)
@@ -229,9 +251,24 @@ class BilingInfo(models.Model):
     zip_code = models.CharField(max_length=75, default=None, null=True, blank=True)
     
 
+class EventDetails(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    event_name=models.CharField(_('event_name'), max_length=150)
+    course_category= models.ManyToManyField(EventInterest)
+    Description=models.TextField(max_length=200)
+    location=models.CharField(max_length=75)
+    course_link=models.URLField(max_length=200,unique=True)
+    private_event=models.BooleanField(default=False)
+    max_spots=models.IntegerField(blank=True, null=True)
+    Event_cost=models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_fee=models.BooleanField(default=False)
+    add_salestax=models.BooleanField(default=False)
+    sales_tax=models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return str(self.event_name)
+
     
     
-
-
 
     
