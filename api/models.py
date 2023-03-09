@@ -94,11 +94,23 @@ class UserManager(BaseUserManager):
 
 class EventInterest(models.Model):
     
-    event_category = models.CharField(max_length=50)
-    status = models.BooleanField(default=False)
+     event_category = models.CharField(max_length=50)
+     status = models.BooleanField(default=False)
 
-    def __str__(self):
+     def __str__(self):
         return str(self.event_category)
+    
+    # language = models.CharField(max_length=63, verbose_name=_("language"))
+    # slug = models.SlugField(max_length=70, primary_key=True)
+    # code = models.CharField(max_length=70, null=True)
+
+    # class Meta:
+    #     verbose_name = _('group language')
+    #     verbose_name_plural = _('group languages')
+    #     ordering = ['language']
+
+    # def __str__(self) -> str:
+    #     return self.language
 
     
 class User(AbstractBaseUser, PermissionsMixin):
@@ -162,7 +174,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     available_from = models.TimeField(null=True, blank=True)
     available_to = models.TimeField(null=True, blank=True)
     off_weekdays = models.ManyToManyField(WeekDays)
-    event= models.ManyToManyField(EventInterest)
+    events= models.ManyToManyField(EventInterest)
+    
     profile_image = models.ImageField(
         upload_to="Avatar", default=None, null=True, blank=True
     )

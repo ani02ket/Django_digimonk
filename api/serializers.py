@@ -5,6 +5,7 @@ from .models import User,BilingInfo,EventInterest
 
 
 class EventSerialier(serializers.ModelSerializer):
+    event_category = serializers.CharField(required=True)
     class Meta:
         model=EventInterest
         fields=("event_category","status")
@@ -12,30 +13,23 @@ class EventSerialier(serializers.ModelSerializer):
         
 class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(min_length=8, required=True)
-    event=EventSerialier(many=True,read_only=True)
+    events=EventSerialier(many=True)
     timezone=serializers.CharField(max_length=32)
+    
+    
+    def create(self, validated_data):
+         events = validated_data.pop("events")
+     
+         user =User.objects.create(**validated_data)
+         user.events.set(EventInterest.objects.filter(event_category__in=[event["event_category"] for event in events]))
+         return user
     class Meta:
         model = User
-        fields =('email','event','timezone')
-       
-    def create(self, validated_data):
-        try:
-            event_ids = []
-            for events in self.initial_data['event']:
-                if 'event_category' not in events:
-                    raise serializers.ValidationError({'detail': 'key error'})
-                event_ids.append(events['event_category'])
-               
-              
-            if event_ids:
-                new_event =User.objects.create(**validated_data)
-                for event_id in event_ids:
-                    new_event.event.add(event_id)
-            new_event.save()
-            return new_event
-        except Exception as e:
-            raise serializers.ValidationError({'detail2': e})
-    
+        fields =('email','events','timezone')
+        
+        
+
+
     def validate_email(self, value):
 
         if(User.objects.filter(email__iexact=value).first()):
