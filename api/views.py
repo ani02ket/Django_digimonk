@@ -94,3 +94,9 @@ def VerifyToken(request,token):
     except Exception as e:
         return HttpResponse('Invalid token')
 
+class EventDetails(APIView):
+    def post(self,request):
+        serializer = EventDetailsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED)

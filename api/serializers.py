@@ -10,12 +10,19 @@ class EventSerialier(serializers.ModelSerializer):
         model=EventInterest
         fields=("event_category","status")
   
-        
+class EventDetailsSerializer(serializers.ModelSerializer):
+    event_name=serializers.CharField(max_length=50)
+    
+    class Meta:
+        model=EventDetails
+        fields = ("event_name","Description")
+              
 class UserRegisterSerializer(serializers.ModelSerializer):
+
     email = serializers.EmailField(min_length=8, required=True)
     events=EventSerialier(many=True)
     timezone=serializers.CharField(max_length=32)
-    
+    # choices = EventDetailsSerializer(many=True)
     
     def create(self, validated_data):
          events = validated_data.pop("events")
@@ -90,6 +97,8 @@ class BillingInfoSerializer(serializers.ModelSerializer):
         fields = ("user","first_name","last_name","address","city","state_id","zip_code")
     
 class EventDetailsSerializer(serializers.ModelSerializer):
+    event_name=serializers.CharField(max_length=50)
+    
     class Meta:
-        model:EventDetails
-        field ="__all__"
+        model=EventDetails
+        fields = ("user","event_name","Description","course_link","Event_cost")

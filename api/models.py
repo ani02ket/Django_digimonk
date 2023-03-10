@@ -197,6 +197,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     available_to = models.TimeField(null=True, blank=True)
     off_weekdays = models.ManyToManyField(WeekDays)
     events= models.ManyToManyField(EventInterest)
+    # @property
+    # def choices(self):
+    #     return EventDetails.objects.filter(user=self)
     
     profile_image = models.ImageField(
         upload_to="Avatar", default=None, null=True, blank=True
@@ -258,12 +261,12 @@ class EventDetails(models.Model):
     Description=models.TextField(max_length=200)
     location=models.CharField(max_length=75)
     course_link=models.URLField(max_length=200,unique=True)
-    private_event=models.BooleanField(default=False)
+    private_event=models.BooleanField(default=False,null=True)
     max_spots=models.IntegerField(blank=True, null=True)
-    Event_cost=models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_fee=models.BooleanField(default=False)
-    add_salestax=models.BooleanField(default=False)
-    sales_tax=models.DecimalField(max_digits=10, decimal_places=2)
+    Event_cost=models.DecimalField(max_digits=10,null=True, decimal_places=2)
+    transaction_fee=models.BooleanField(default=False,null=True)
+    add_salestax=models.BooleanField(default=False,null=True)
+    sales_tax=models.DecimalField(max_digits=10,null=True, decimal_places=2)
 
     def __str__(self):
         return str(self.event_name)
