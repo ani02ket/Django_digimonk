@@ -22,5 +22,6 @@ urlpatterns = [
         "change-profile-details/",
         ChangeProfileDetailView.as_view(),
         name="change_profile_details",
-    )
+    ),
+    path('ChangeEmail/<id>',ChangeEmail.as_view())
 ]

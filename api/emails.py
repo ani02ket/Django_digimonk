@@ -32,5 +32,18 @@ def send_email_token(email,token):
     
     return True
     
+def update_email(p_email,u_email):
+    try:
+      
         
+        subject='Account updated'
+        message=f"Your email_id is updated to : {u_email}"
+        email_from=settings.EMAIL_HOST_USER
+        send_mail(subject,message,email_from,[p_email])
+        return message
+
+    except Exception as e:
+        return False
+    
+   
 

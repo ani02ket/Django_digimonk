@@ -144,3 +144,19 @@ class EventDetails(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
+    
+
+class ChangeEmail(APIView):
+    
+    def put(self,request,id):
+        
+            user_obj=User.objects.get(id=id)
+            temp=User.objects.get(id=id)
+            serializer = ChangeEmailSerializer(user_obj,data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            update_email(temp.email,user_obj.email)
+            return Response(status=status.HTTP_200_OK)
+        
+       
+

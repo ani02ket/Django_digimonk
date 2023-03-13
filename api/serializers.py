@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.utils.translation import gettext as _
+
 from .models import *
 
 from rest_framework.exceptions import ValidationError
@@ -176,3 +177,16 @@ class EventDetailsSerializer(serializers.ModelSerializer):
         model=EventDetails
         fields = ("user","event_name","Description","course_link","Event_cost")
         
+ 
+class ChangeEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email',]
+        
+    # def create(self, validated_data):
+    #     email = validated_data.get('email')
+    #     print(email)
+    #     # User.objects.create_user(**validated_data, is_active=False)
+    #     update_email_token(email)
+    #     return email
+    
