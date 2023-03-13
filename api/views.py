@@ -33,14 +33,6 @@ class RegistrationView(APIView):
     #     serializer.save()
     #     return Response(serializer.data,status=status.HTTP_201_CREATED)
     
-class UpdateUserView(APIView):
-    
-    def put(self,request):
-        serializer = UpdateUserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
-
 
 class GenerateOTP(APIView):
     def post(self,request):

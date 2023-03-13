@@ -141,27 +141,7 @@ class ChangeProfileDetailSerializer(serializers.ModelSerializer):
         self.instance = self.update(self.instance, self.validated_data)
         return self.instance
        
-class UpdateUserSerializer(serializers.ModelSerializer):
-    
-    email = serializers.EmailField(min_length=8, required=True)
-    socialmedia_link= SocialmediaSerializer(many=True)
 
-    class Meta:
-        model = User
-        fields =["email","socialmedia_link"]
-        
-    def create(self,validated_data):
-        
-        socialmedia_link=validated_data.pop('socialmedia_link')
-        # user=User.objects.create(**validated_data) 
-        email=validated_data.get('email')
-        
-        user=User.objects.get(email=email)
-      
-        for social in socialmedia_link:
-            Socialmedia.objects.update(**social,user=user)
-        return user
-    
     
      
 class GenerateOTPSerializer(serializers.ModelSerializer):
