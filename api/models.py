@@ -91,6 +91,9 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, user_type, **extra_fields)
+    
+
+    
 
 class EventInterest(models.Model):
     
@@ -100,17 +103,6 @@ class EventInterest(models.Model):
      def __str__(self):
         return str(self.event_category)
     
-    # language = models.CharField(max_length=63, verbose_name=_("language"))
-    # slug = models.SlugField(max_length=70, primary_key=True)
-    # code = models.CharField(max_length=70, null=True)
-
-    # class Meta:
-    #     verbose_name = _('group language')
-    #     verbose_name_plural = _('group languages')
-    #     ordering = ['language']
-
-    # def __str__(self) -> str:
-    #     return self.language
 
 
 class ScheduledEvent(models.Model):
@@ -141,18 +133,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     Username and password are required. Other fields are optional.
     """
-    # username_validator = UnicodeUsernameValidator()
-
-    # username = models.CharField(
-    #     _('username'),
-    #     max_length=150,
-    #     unique=True,
-    #     help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-    #     validators=[username_validator],
-    #     error_messages={
-    #         'unique': _("A user with that username already exists."),
-    #     },blank=True
-    # )
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True,  blank=True)
@@ -190,16 +170,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
     )
    
-    
     zip_code = models.CharField(max_length=75, default=None, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     available_from = models.TimeField(null=True, blank=True)
     available_to = models.TimeField(null=True, blank=True)
     off_weekdays = models.ManyToManyField(WeekDays)
     events= models.ManyToManyField(EventInterest)
-    # @property
-    # def choices(self):
-    #     return EventDetails.objects.filter(user=self)
     
     profile_image = models.ImageField(
         upload_to="Avatar", default=None, null=True, blank=True
@@ -210,7 +186,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
+    
+    # @property
+    # def choices(self):
+    #     return self.choice_set.all()
+    
     objects = UserManager()
     
     
@@ -233,10 +213,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def tokens(self):
+    def tokens(self): 
         refresh = RefreshToken.for_user(self)
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
     
+   
+    
+    
+class Socialmedia(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name="socialmedia_link")
+    social_media_name=models.CharField(max_length=50)
+    url=models.URLField()
 
 class BilingInfo(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -273,5 +260,46 @@ class EventDetails(models.Model):
 
     
     
-
+# class EventSchedule(models.Model):
+#     scheduled_event=models.OneToOneField(ScheduledEvent,on_delete=models.CASCADE)
+#     open_schedule=models.OneToOneField(OpenSchedule,on_delete=models.CASCADE) 
+#     combined_schedule=models.OneToOneField(CombinedSchedule,on_delete=models.CASCADE)   
     
+class DateModelMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        abstract = True    
+    
+      
+class Availability(DateModelMixin):
+    user_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_availability"
+    )
+    weekdays_id = models.ForeignKey(
+        WeekDays,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    
+    def __str__(self):
+        return f"USER ID:- {self.user_id} , WEEKDAYSS IDD:- {self.weekdays_id}"
+
+    class Meta:
+        verbose_name = _("Availability")
+        verbose_name_plural = _("Availability")
+        
+        
+class AvailabilityTimeSlots(DateModelMixin):
+    availability_id = models.ForeignKey(
+        Availability,
+        on_delete=models.CASCADE,
+        related_name="user_availability_time_slot",
+    )
+    from_time = models.TimeField()
+    to_time = models.TimeField()
+
+    class Meta:
+        verbose_name = _("Availability")
+        verbose_name_plural = _("Availability")

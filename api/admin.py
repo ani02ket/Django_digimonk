@@ -11,6 +11,9 @@ admin.site.register(EventDetails)
 admin.site.register(ScheduledEvent)
 admin.site.register(OpenSchedule)
 admin.site.register(CombinedSchedule)
+admin.site.register(Availability)
+admin.site.register(Socialmedia)
+admin.site.register(AvailabilityTimeSlots)
 
 
 

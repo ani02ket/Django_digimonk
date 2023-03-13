@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from .emails import *
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.generics import ListCreateAPIView
 
 # class EventView(viewsets.ModelViewSet):
 #     serializer=EventSerialier
@@ -22,7 +23,22 @@ class RegistrationView(APIView):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    
+    # def put(self,request):
+    #     serializer = UserRegisterSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data,status=status.HTTP_201_CREATED)
+    
+class UpdateUserView(APIView):
+    
+    def put(self,request):
+        serializer = UpdateUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+
 
 class GenerateOTP(APIView):
     def post(self,request):
@@ -65,8 +81,27 @@ class Billing(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
-        
 
+class SocialMedia(APIView):
+    def post(self,request):
+        serializer = SocialmediaSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+
+    
+class UserDetail(ListCreateAPIView):
+    serializer_class = ProfileDetailSerializer
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+    def get_queryset(self):
+        return User.objects.all()
+ 
+    
+    
 class UserLogin(APIView):
     def post(self,request): 
         email = self.request.data.get("email")
