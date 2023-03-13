@@ -10,6 +10,8 @@ from .emails import *
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import ListCreateAPIView
 
+from rest_framework.permissions import AllowAny
+
 # class EventView(viewsets.ModelViewSet):
 #     serializer=EventSerialier
 #     def get_queryset(self):
@@ -89,6 +91,21 @@ class SocialMedia(APIView):
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
 
+class ChangeProfileDetailView(APIView):
+    serializer_class = ChangeProfileDetailSerializer
+    permission_classes = [AllowAny]
+
+    def put(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
 
     
 class UserDetail(ListCreateAPIView):

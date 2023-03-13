@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.utils.translation import gettext as _
 from .models import *
 
+from rest_framework.exceptions import ValidationError
+
 class WeekDaysSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeekDays
@@ -88,7 +90,57 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         return value
     
+class ChangeProfileDetailSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    socialmedia_link= SocialmediaSerializer(many=True)
+    # profile_image = Base64ImageField(
+    #     max_length=None,
+    #     use_url=True,
+    #     required=False,
+    #     allow_null=True,
+    #     allow_empty_file=True,
+    # )
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            # "username",
+            "first_name",
+            "last_name",
+            # "user_type",
+            "phone_number",
+            "timezone",
+            "bio",
+            "available_from",
+            "available_to",
+            "socialmedia_link"
+            # "off_weekdays",
+            # "events"
+            # "profile_image",
+        ]
+
+    def validate_email(self, value):
+        self.email = value
+        if not User.objects.filter(email__iexact=self.email).first():
+            raise ValidationError(_("Email doesn't exists."))
+
+        if not User.objects.filter(email__iexact=self.email, is_active=True).first():
+            raise ValidationError(_("Email is not verified"))
+
+        self.instance = User.objects.get(email__iexact=self.email)
+        return value
+
+    def save(self):
         
+        email=self.validated_data.pop("email")
+        user=User.objects.get(email=email)
+        social_media=self.validated_data.pop('socialmedia_link')
+        for social in social_media:
+           Socialmedia.objects.create(**social,user=user)
+        self.instance = self.update(self.instance, self.validated_data)
+        return self.instance
+       
 class UpdateUserSerializer(serializers.ModelSerializer):
     
     email = serializers.EmailField(min_length=8, required=True)
@@ -103,10 +155,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         socialmedia_link=validated_data.pop('socialmedia_link')
         # user=User.objects.create(**validated_data) 
         email=validated_data.get('email')
+        
         user=User.objects.get(email=email)
+      
         for social in socialmedia_link:
-            Socialmedia.objects.create(**social,user=user)
+            Socialmedia.objects.update(**social,user=user)
         return user
+    
     
      
 class GenerateOTPSerializer(serializers.ModelSerializer):

@@ -17,5 +17,10 @@ urlpatterns = [
     path("VerifyToken/<token>",VerifyToken),
     path("event/",EventDetails.as_view()),   
     path("SocialMedia/",SocialMedia.as_view()),
-    path("UserDetail/", UserDetail.as_view(), name="UserDetail")
+    path("UserDetail/", UserDetail.as_view(), name="UserDetail"),
+    path(
+        "change-profile-details/",
+        ChangeProfileDetailView.as_view(),
+        name="change_profile_details",
+    )
 ]
