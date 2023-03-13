@@ -44,32 +44,6 @@ class SocialmediaSerializer(serializers.ModelSerializer):
         model=Socialmedia
         fields=["user","social_media_name","url"]
         read_only_fields=("user",)
-     
-        
-class ProfileDetailSerializer(serializers.ModelSerializer):
-    
-    email = serializers.EmailField(required=True)
-    events=EventSerialier(many=True)
-    socialmedia_link= SocialmediaSerializer(many=True)
-    class Meta:
-        model = User
-        fields =(
-             'email',
-             'events',
-             'timezone',
-             'city',
-             'address',
-             "first_name",
-             "last_name",
-             "phone_number",
-             "bio",
-            "available_from",
-            "available_to",
-            "off_weekdays",
-            "profile_image",
-            "socialmedia_link"
-            )
-            
         
   
               

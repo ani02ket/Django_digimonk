@@ -98,10 +98,10 @@ class ChangeProfileDetailView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
-
+    
     
 class UserDetail(ListCreateAPIView):
-    serializer_class = ProfileDetailSerializer
+    serializer_class = ChangeProfileDetailSerializer
 
     def get_serializer_context(self):
         return {"request": self.request}
